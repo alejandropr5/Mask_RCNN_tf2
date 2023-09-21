@@ -2153,8 +2153,7 @@ class MaskRCNN(object):
         metrics. Then calls the Keras compile() function.
         """
         # Optimizer object
-        optimizer = keras.optimizers.legacy.SGD(
-            learning_rate=learning_rate, momentum=momentum,
+        optimizer = tf.keras.optimizers.legacy.Adam(learning_rate=learning_rate,
             clipnorm=self.config.GRADIENT_CLIP_NORM)
         # Add Losses
         loss_names = [
@@ -2363,8 +2362,8 @@ class MaskRCNN(object):
             validation_data=val_generator,
             validation_steps=self.config.VALIDATION_STEPS,
             max_queue_size=100,
-            workers=1,
-            use_multiprocessing=False,
+            workers=workers,
+            use_multiprocessing=True,
         )
         self.epoch = max(self.epoch, epochs)
 

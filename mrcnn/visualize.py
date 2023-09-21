@@ -253,7 +253,7 @@ def draw_rois(image, rois, refined_rois, mask, class_ids, class_names, limit=10)
                     color='w', size=11, backgroundcolor="none")
 
             # Mask
-            m = utils.unmold_mask(mask[id], rois[id]
+            m = utils.unmold_mask(mask[id].astype(np.uint8) * 255, rois[id]
                                   [:4].astype(np.int32), image.shape)
             masked_image = apply_mask(masked_image, m, color)
 
@@ -456,6 +456,7 @@ def draw_boxes(image, boxes=None, refined_boxes=None,
                 p = Polygon(verts, facecolor="none", edgecolor=color)
                 ax.add_patch(p)
     ax.imshow(masked_image.astype(np.uint8))
+    plt.show()
 
 
 def display_table(table):

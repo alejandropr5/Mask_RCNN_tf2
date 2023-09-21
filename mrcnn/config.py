@@ -100,7 +100,7 @@ class Config(object):
 
     # If enabled, resizes instance masks to a smaller size to reduce
     # memory load. Recommended when using high-resolution images.
-    USE_MINI_MASK = True
+    USE_MINI_MASK = False
     MINI_MASK_SHAPE = (56, 56)  # (height, width) of the mini-mask
 
     # Input image resizing
@@ -227,10 +227,26 @@ class Config(object):
         # See compose_image_meta() for details
         self.IMAGE_META_SIZE = 1 + 3 + 3 + 4 + 1 + self.NUM_CLASSES
 
+    def to_dict(self):
+        return {a: getattr(self, a)
+                for a in sorted(dir(self))
+                if not a.startswith("__") and not callable(getattr(self, a))}
+
+    def get_pythonic_dict(self):
+        """Convert inner none Py-objects to Python one.
+        """
+        dict_config = self.to_dict()
+        for key, value in dict_config.items():
+            if type(value) == np.ndarray:
+                dict_config[key] = value.tolist()
+        return dict_config
+
     def display(self):
         """Display Configuration values."""
         print("\nConfigurations:")
-        for a in dir(self):
-            if not a.startswith("__") and not callable(getattr(self, a)):
-                print("{:30} {}".format(a, getattr(self, a)))
+        for key, val in self.to_dict().items():
+            print(f"{key:30} {val}")
+        # for a in dir(self):
+        #     if not a.startswith("__") and not callable(getattr(self, a)):
+        #         print("{:30} {}".format(a, getattr(self, a)))
         print("\n")
